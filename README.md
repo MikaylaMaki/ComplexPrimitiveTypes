@@ -12,7 +12,7 @@ Simple subclass `TypedList` or `TypedMap` for each kind of list or map you want,
 Example:
 
 ```php
-  class StringList extends TypedList
+class StringList extends TypedList
     {
 
       /**
