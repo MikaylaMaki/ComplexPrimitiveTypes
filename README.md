@@ -11,20 +11,18 @@ Simple subclass `TypedList` or `TypedMap` for each kind of list or map you want,
 
 Example:
 
-`
-class StringList extends TypedList
-{
 
-    /**
-     * @param mixed $val
-     * @return bool
-     */
-    protected function isType($val)
+  class StringList extends TypedList
     {
-        return is_string($val);
-    }
-}
 
-`
+      /**
+       * @param mixed $val
+       * @return bool
+       */
+      protected function isType($val)
+      {
+          return is_string($val);
+      }
+  }
 
 You can now use StringList as you would a normal array. If someone attempts to put a non string in your list, an exception will be thrown immediately.
