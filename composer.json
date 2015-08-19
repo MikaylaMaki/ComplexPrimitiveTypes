@@ -1,0 +1,16 @@
+{
+    "name": "trentonmaki/complex-types",
+    "description": "Adds strongly typed lists and maps",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MakiCode",
+            "email": "trentonmaki@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    }
+}
