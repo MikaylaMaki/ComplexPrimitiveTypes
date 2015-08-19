@@ -1,38 +1,39 @@
 <?php
 
-/**
- * Created by IntelliJ IDEA.
- * User: trentonmaki
- * Date: 8/19/15
- * Time: 12:04 PM
- */
-abstract class TypedMap implements IteratorAggregate, ArrayAccess, Serializable, Countable
-{
+namespace Types;
 
-    private $map;
+use ArrayAccess;
+use ArrayIterator;
+use Countable;
+use InvalidArgumentException;
+use IteratorAggregate;
+use Serializable;
+use Traversable;
 
-    /**
-     * @param mixed $key
-     * @return boolean
-     */
-    protected abstract function keyType($key);
+abstract class TypedList implements IteratorAggregate , ArrayAccess , Serializable , Countable {
 
     /**
-     * @param mixed $value
-     * @return boolean
+     * @var array
      */
-    protected abstract function valueType($value);
+    private $list;
 
-    public function __construct($array)
+
+    public function __construct(...$items)
     {
-        foreach ($array as $key => $value) {
-            if ($this->keyType($key) && $this->valueType($value)) {
-                $this->map[$key] = $value;
+        foreach ($items as $item) {
+            if($this->isType($item)) {
+                $this->list[] = $item;
             } else {
-                throw new InvalidArgumentException("Invalid key or value type passed to constructor");
+                throw new InvalidArgumentException("Type mismatch, check constructor arguments");
             }
         }
     }
+
+    /**
+     * @param mixed $val
+     * @return bool
+     */
+    protected abstract function isType($val);
 
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -43,8 +44,9 @@ abstract class TypedMap implements IteratorAggregate, ArrayAccess, Serializable,
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->map);
+        return new ArrayIterator($this->list);
     }
+
 
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -60,13 +62,21 @@ abstract class TypedMap implements IteratorAggregate, ArrayAccess, Serializable,
      */
     public function offsetSet($offset, $value)
     {
-        if ($this->valueType($value) && $this->keyType($offset)) {
-            $this->map[$offset] = $value;
+        if ($this->isType($value)) {
+            if (is_int($offset)) {
+                $this->list[$offset] = $value;
+            } else if (is_null($offset)) {
+                $this->list[] = $value;
+            } else {
+                throw new InvalidArgumentException("Invalid offset, this object is a list not a map");
+            }
         } else {
-            throw new InvalidArgumentException("Invalid key or value type, appending to this map is not supported");
+            throw new InvalidArgumentException("Invalid type exception, not inserted into list");
         }
     }
 
+    //ALL OTHER ARRAY BEHAVIOR IS THE SAME AS NATIVE ARRAYS, ONLY CONSTRUCTION AND SETTING HAVE CHANGED
+    //BELOW THIS POINT ARE ALL THE NATIVE METHODS, NOTHING IMPORTANT.
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
@@ -79,10 +89,9 @@ abstract class TypedMap implements IteratorAggregate, ArrayAccess, Serializable,
      * <p>
      * The return value will be casted to boolean if non-boolean was returned.
      */
-    public
-    function offsetExists($offset)
+    public function offsetExists($offset)
     {
-        return isset($this->map[$offset]);
+        return isset($this->list[$offset]);
     }
 
     /**
@@ -94,10 +103,9 @@ abstract class TypedMap implements IteratorAggregate, ArrayAccess, Serializable,
      * </p>
      * @return mixed Can return all value types.
      */
-    public
-    function offsetGet($offset)
+    public function offsetGet($offset)
     {
-        return $this->map[$offset];
+        return $this->list[$offset];
     }
 
     /**
@@ -109,10 +117,9 @@ abstract class TypedMap implements IteratorAggregate, ArrayAccess, Serializable,
      * </p>
      * @return void
      */
-    public
-    function offsetUnset($offset)
+    public function offsetUnset($offset)
     {
-        unset($this->map[$offset]);
+        unset($this->list[$offset]);
     }
 
     /**
@@ -124,10 +131,9 @@ abstract class TypedMap implements IteratorAggregate, ArrayAccess, Serializable,
      * <p>
      * The return value is cast to an integer.
      */
-    public
-    function count()
+    public function count()
     {
-        return count($this->map);
+        return count($this->list);
     }
 
     /**
@@ -136,10 +142,9 @@ abstract class TypedMap implements IteratorAggregate, ArrayAccess, Serializable,
      * @link http://php.net/manual/en/serializable.serialize.php
      * @return string the string representation of the object or null
      */
-    public
-    function serialize()
+    public function serialize()
     {
-        return serialize($this->map);
+        return serialize($this->list);
     }
 
     /**
@@ -151,9 +156,8 @@ abstract class TypedMap implements IteratorAggregate, ArrayAccess, Serializable,
      * </p>
      * @return void
      */
-    public
-    function unserialize($serialized)
+    public function unserialize($serialized)
     {
-        $this->map = unserialize($serialized);
+        $this->list = unserialize($serialized);
     }
 }
