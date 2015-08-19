@@ -165,4 +165,12 @@ abstract class TypedMap implements IteratorAggregate, ArrayAccess, Serializable,
     {
         $this->map = unserialize($serialized);
     }
+
+    /**
+     * Get the array backing this map
+     * @return array
+     */
+    public function getArray() {
+        return $this->map;
+    }
 }

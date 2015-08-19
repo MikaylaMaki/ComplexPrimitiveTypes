@@ -160,4 +160,12 @@ abstract class TypedList implements IteratorAggregate , ArrayAccess , Serializab
     {
         $this->list = unserialize($serialized);
     }
+
+    /**
+     * Get the array backing this list
+     * @return array
+     */
+    public function getArray() {
+        return $this->list;
+    }
 }
