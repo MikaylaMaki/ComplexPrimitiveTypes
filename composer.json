@@ -18,6 +18,7 @@
   "autoload": {
     "psr-4": {
       "Types\\": "src/"
-    }
+    },
+    "files": ["src/array_functions.php"]
   }
 }

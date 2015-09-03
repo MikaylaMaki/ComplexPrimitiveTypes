@@ -15,7 +15,7 @@ abstract class TypedList implements IteratorAggregate , ArrayAccess , Serializab
     /**
      * @var array
      */
-    private $list;
+    private $list = [];
 
 
     public function __construct(...$items)
